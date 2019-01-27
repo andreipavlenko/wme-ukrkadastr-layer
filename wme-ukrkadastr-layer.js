@@ -122,13 +122,14 @@ function addEventHandlers() {
 function fetchAreaData(areaInCoordinates) {
   $('#kadastr-area-data').html('<div class="decorated-bg"><div id="loader-thinking">🤔</div> Завантаження</div>');
   $.ajax({
-    url: 'https://cors-anywhere.herokuapp.com/http://map.land.gov.ua/kadastrova-karta/getobjectinfo',
-    method: 'POST',
+    url: 'https://map.land.gov.ua/kadastrova-karta/getobjectinfo',
+    type: 'POST',
+    dataType : "json",
     data: {
       x: areaInCoordinates.x,
-      y: areaInCoordinates.y,
-      zoom: 15,
-      'actLayers[]': 'kadastr'
+        y: areaInCoordinates.y,
+        zoom: 15,
+        actLayers: ['kadastr']
     },
     success: data => {
       if (data.dilanka) {
