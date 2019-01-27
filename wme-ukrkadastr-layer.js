@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko
-// @version        0.1.1
+// @version        0.1.2
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -91,7 +91,7 @@ function createTab() {
 function addKadastrLayer() {
   kadastrLayer = new OpenLayers.Layer.WMS(
     'Kadastr',
-    'http://map.land.gov.ua/geowebcache/service/wms?tiled=true',
+    'https://map.land.gov.ua/geowebcache/service/wms?tiled=true',
     {
       'LAYERS': 'kadastr',
       'VERSION': '1.1.1',
