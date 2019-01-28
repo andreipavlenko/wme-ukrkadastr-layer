@@ -163,19 +163,29 @@ function fetchAreaData(coordinates) {
     },
     success: data => {
       if (data.dilanka) {
-        htmlString = data.dilanka;
-        htmlString = htmlString.replace(/hidden/g, '').replace(/\&nbsp\;/g, '');
-        $('#kadastr-area-data').html(`<div class="decorated-bg">${htmlString}</div>`);
-        items = $(`#kadastr-area-data li`);
-        items[items.length - 2].remove();
-        items[items.length - 3].remove();
-        $('<li><br/></li>').insertBefore(items[items.length - 1]);
+        showAreaData(data.dilanka);
       } else {
         $('#kadastr-area-data').html('<div class="decorated-bg">😕 Ділянку не знайдено</div>');
       }
     },
     error: () => {
       $('#kadastr-area-data').html('<div class="decorated-bg">⛔ Помилка</div>');
+    }
+  });
+}
+
+function showAreaData(areaData) {
+  areaData = areaData.replace(/hidden/g, '')
+                     .replace(/\&nbsp\;/g, '')
+                     .replace(/Кадастровий номер/ig, 'Ділянка');
+  $('#kadastr-area-data').html(`<div class="decorated-bg">${areaData}</div>`);
+  $(`#kadastr-area-data li`).each((idx, el) => {
+    let item = $(el);
+    let itemText = item.text();
+    if (/Витяг/i.test(itemText)) {
+      item.hide();
+    } else if (/Площа/i.test(itemText)) {
+      $('<li><br/></li>').insertAfter(item);
     }
   });
 }
