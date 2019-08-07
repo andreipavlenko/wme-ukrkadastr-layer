@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko
-// @version        0.3.1
+// @version        0.3.2
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -152,7 +152,7 @@ function drawMarker(coordinates) {
 function fetchAreaData(coordinates) {
   $('#kadastr-area-data').html('<div class="decorated-bg"><div id="loader-thinking">🤔</div> Завантаження</div>');
   $.ajax({
-    url: 'https://map.land.gov.ua/kadastrova-karta/getobjectinfo',
+    url: 'https://cors-anywhere.herokuapp.com/https://map.land.gov.ua/kadastrova-karta/getobjectinfo',
     type: 'POST',
     dataType : "json",
     data: {
