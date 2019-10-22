@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko
-// @version        0.3.2
+// @version        0.4.0
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
