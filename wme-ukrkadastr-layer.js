@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko
-// @version        0.4.0
+// @version        0.4.1
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -194,9 +194,13 @@ function showAreaData(areaData) {
 function getLocalityName() {
   var kadastrNumber = $('#kadastr-area-data ul li')[0];
   if (!kadastrNumber) return;
-  var koatuu = /:(\d+):/.exec(kadastrNumber.innerText)
-  if (!koatuu[1]) return;
-  fetch(`https://cors-anywhere.herokuapp.com/http://wazeukraine.ml:7979/locality?code=${koatuu[1]}`)
+  var koatuu = /:(\d+):/.exec(kadastrNumber.innerText);
+  var zoneNumber = /:\d+:(\d+):/.exec(kadastrNumber.innerText);
+  if (!koatuu[1] || !zoneNumber[1]) return;
+  var localityCode = koatuu[1].split('');
+  localityCode.splice(-(zoneNumber[1].length), zoneNumber[1].length, zoneNumber[1]);
+  localityCode = localityCode.join('');
+  fetch(`https://cors-anywhere.herokuapp.com/http://wazeukraine.ml:7979/locality?code=${localityCode}`)
     .then(response => response.json())
     .then(data => {
       if (data.name) {
