@@ -164,6 +164,7 @@ function fetchAreaData(coordinates) {
     success: data => {
       if (data.dilanka) {
         showAreaData(data.dilanka);
+        getLocalityName();
       } else {
         $('#kadastr-area-data').html('<div class="decorated-bg">😕 Ділянку не знайдено</div>');
       }
@@ -188,6 +189,21 @@ function showAreaData(areaData) {
       $('<li><br/></li>').insertAfter(item);
     }
   });
+}
+
+function getLocalityName() {
+  var kadastrNumber = $('#kadastr-area-data ul li')[0];
+  if (!kadastrNumber) return;
+  var koatuu = /:(\d+):/.exec(kadastrNumber.innerText)
+  if (!koatuu[1]) return;
+  fetch(`https://cors-anywhere.herokuapp.com/http://wazeukraine.ml:7979/locality?code=${koatuu[1]}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.name) {
+        var localityName = data.name.toLowerCase().replace(/^./, data.name[0].toUpperCase());
+        $('#kadastr-area-data ul').prepend('<li><div class="label">Населений пункт:</div><span>'+localityName+'</span></li>');
+      }
+    });
 }
 
 function polyfillOpenLayers() {
