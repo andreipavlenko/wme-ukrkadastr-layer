@@ -197,10 +197,7 @@ function getLocalityName() {
   var koatuu = /:(\d+):/.exec(kadastrNumber.innerText);
   var zoneNumber = /:\d+:(\d+):/.exec(kadastrNumber.innerText);
   if (!koatuu[1] || !zoneNumber[1]) return;
-  var localityCode = koatuu[1].split('');
-  localityCode.splice(-(zoneNumber[1].length), zoneNumber[1].length, zoneNumber[1]);
-  localityCode = localityCode.join('');
-  fetch(`https://cors-anywhere.herokuapp.com/http://wazeukraine.ml:7979/locality?code=${localityCode}`)
+  fetch(`https://cors-anywhere.herokuapp.com/http://wazeukraine.ml:7979/locality?code=${koatuu}&zone_number=${zoneNumber}`)
     .then(response => response.json())
     .then(data => {
       if (data.name) {
