@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko
-// @version        0.4.3
+// @version        0.4.4
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -202,6 +202,9 @@ function getLocalityName() {
     .then(data => {
       if (data.name) {
         var localityName = data.name.toLowerCase().replace(/^./, data.name[0].toUpperCase());
+        if (/\//.test(localityName)) {
+          localityName = "Поза населеним пунктом";
+        }
         $('#kadastr-area-data ul').prepend('<li><div class="label">Населений пункт:</div><span>'+localityName+'</span></li>');
       }
     });
