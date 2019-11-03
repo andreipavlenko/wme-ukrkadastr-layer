@@ -176,22 +176,6 @@ function fetchAreaData(coordinates) {
   });
 }
 
-function showAreaData(areaData) {
-  areaData = areaData.replace(/hidden/g, '')
-                     .replace(/\&nbsp\;/g, '')
-                     .replace(/Кадастровий номер/ig, 'Ділянка');
-  $('#kadastr-area-data').html(`<div class="decorated-bg">${areaData}</div>`);
-  $(`#kadastr-area-data li`).each((idx, el) => {
-    let item = $(el);
-    let itemText = item.text();
-    if (/Витяг/i.test(itemText)) {
-      item.hide();
-    } else if (/Площа/i.test(itemText)) {
-      $('<li><br/></li>').insertAfter(item);
-    }
-  });
-}
-
 function getLocalityName() {
   var kadastrNumber = $('#kadastr-area-data ul li')[0];
   if (!kadastrNumber) return;
