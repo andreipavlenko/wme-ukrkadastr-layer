@@ -34,16 +34,6 @@ function initialize() {
 function createTab() {
   const tabContent = `\
   <style>
-    #kadastr-area-data ul {
-      list-style: none;
-      padding-inline-start: 0px;
-    }
-    #kadastr-area-data .label {
-      color: black;
-      padding: 0;
-      padding-right: 6px;
-      font-size: inherit;
-    }
     #kadastr-tab .decorated-bg {
       border-radius: 6px;
       background: white;
@@ -151,27 +141,38 @@ function drawMarker(coordinates) {
 
 function fetchAreaData(coordinates) {
   $('#kadastr-area-data').html('<div class="decorated-bg"><div id="loader-thinking">🤔</div> Завантаження</div>');
-  $.ajax({
-    url: 'https://cors-anywhere.herokuapp.com/https://map.land.gov.ua/kadastrova-karta/getobjectinfo',
-    type: 'POST',
-    dataType : "json",
-    data: {
-      x: coordinates.lat,
-      y: coordinates.lon,
-      zoom: 15,
-      actLayers: ['kadastr']
-    },
-    success: data => {
-      if (data.dilanka) {
-        showAreaData(data.dilanka);
-        getLocalityName();
-      } else {
-        $('#kadastr-area-data').html('<div class="decorated-bg">😕 Ділянку не знайдено</div>');
-      }
-    },
-    error: () => {
-      $('#kadastr-area-data').html('<div class="decorated-bg">⛔ Помилка</div>');
+  
+  var params = new URLSearchParams();
+  params.set('x', coordinates.lat);
+  params.set('y', coordinates.lon);
+  params.set('zoom', 13);
+  params.set('actLayers[]', 'kadastr')
+
+  fetch('https://wazeukraine.ml/kadastr_api', {
+    method: 'POST',
+    body: params
+  }).then(data => data.json()).then(data => {
+    var parcel = data.parcel;
+    var district = data.district;
+    if (!parcel) {
+      $('#kadastr-area-data').html('<div class="decorated-bg">😕 Ділянку не знайдено</div>');
+      return;
     }
+    parcel = parcel[0];
+
+    $('#kadastr-area-data').html('');
+    $('#kadastr-area-data').append(`<div class="decorated-bg">
+      <div><strong>Ділянка: </strong>${parcel.cadnum}</div>
+      <div><strong>Область: </strong>${district.natoobl}</div>
+      <div><strong>Населений пункт: </strong><span id="kadastr-locality-name">не визначено</span></div>
+      <div><strong>Тип власності: </strong>${parcel.ownership}</div>
+      <div><strong>Цільове призначення: </strong>${parcel.use}</div>
+      <div><strong>Площа: </strong>${parcel.area+' '+parcel.unit_area}</div>
+      <div style="margin-top: 10px;"><a target="_blank" style="color: #26bae8; padding: 5px 0;" href="${parcel.linkToOwnershipInfo}">Інформація про ділянку</a></div>
+    </div>`);
+  }).catch(err => {
+    $('#kadastr-area-data').html('<div class="decorated-bg">⛔ Помилка</div>');
+    console.error(err);
   });
 }
 
