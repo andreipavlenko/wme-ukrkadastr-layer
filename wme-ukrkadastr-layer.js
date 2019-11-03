@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko
-// @version        0.4.4
+// @version        0.5.0
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -170,27 +170,21 @@ function fetchAreaData(coordinates) {
       <div><strong>Площа: </strong>${parcel.area+' '+parcel.unit_area}</div>
       <div style="margin-top: 10px;"><a target="_blank" style="color: #26bae8; padding: 5px 0;" href="${parcel.linkToOwnershipInfo}">Інформація про ділянку</a></div>
     </div>`);
+    getLocalityName(parcel.koatuu, data.ikk.zona);
   }).catch(err => {
     $('#kadastr-area-data').html('<div class="decorated-bg">⛔ Помилка</div>');
     console.error(err);
   });
 }
 
-function getLocalityName() {
-  var kadastrNumber = $('#kadastr-area-data ul li')[0];
-  if (!kadastrNumber) return;
-  var koatuu = /:(\d+):/.exec(kadastrNumber.innerText);
-  var zoneNumber = /:\d+:(\d+):/.exec(kadastrNumber.innerText);
-  if (!koatuu[1] || !zoneNumber[1]) return;
-  fetch(`https://cors-anywhere.herokuapp.com/http://wazeukraine.ml:7979/locality?code=${koatuu[1]}&zone_number=${zoneNumber[1]}`)
+function getLocalityName(koatuu, zoneNumber) {
+  fetch(`https://wazeukraine.ml/kadastr_locality?code=${koatuu}&zone_number=${zoneNumber}`)
     .then(response => response.json())
     .then(data => {
       if (data.name) {
         var localityName = data.name.toLowerCase().replace(/^./, data.name[0].toUpperCase());
-        if (/\//.test(localityName)) {
-          localityName = "Поза населеним пунктом";
-        }
-        $('#kadastr-area-data ul').prepend('<li><div class="label">Населений пункт:</div><span>'+localityName+'</span></li>');
+        if (/\//.test(localityName)) return;
+        $('#kadastr-locality-name').html(localityName);
       }
     });
 }
