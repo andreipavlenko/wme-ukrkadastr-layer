@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko, Anton Shevchuk
-// @version        0.7.1
+// @version        0.7.2
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -171,7 +171,7 @@
         params.set('zoom', '13');
         params.set('actLayers[]', 'kadastr');
 
-    fetch('https://wazeukraine.ml/kadastr_api', {
+    fetch('https://waze.com.ua/kadastr_api', {
       method: 'POST',
       body: params
     }).then(data => data.json()).then(data => {
@@ -201,7 +201,7 @@
   }
 
   function getLocalityName(koatuu, zoneNumber) {
-    fetch(`https://wazeukraine.ml/kadastr_locality?code=${koatuu}&zone_number=${zoneNumber}`)
+    fetch(`https://waze.com.ua/kadastr_locality?code=${koatuu}&zone_number=${zoneNumber}`)
       .then(response => response.json())
       .then(data => {
         if (data.name) {
