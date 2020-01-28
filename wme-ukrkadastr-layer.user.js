@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko, Anton Shevchuk
-// @version        0.7.2
+// @version        0.7.3
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
 // @grant          none
 // @description    Adds kadastr layer
-// @require        https://greasyfork.org/scripts/389117-apihelper/code/APIHelper.js?version=733775
+// @require        https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js
+// @require        https://greasyfork.org/scripts/389117-apihelper/code/APIHelper.js?version=736468
 // @require        https://greasyfork.org/scripts/389577-apihelperui/code/APIHelperUI.js?version=734620
 // @namespace      https://greasyfork.org/users/182795
 // ==/UserScript==
@@ -18,6 +19,7 @@
 /* global require */
 /* global $ */
 /* global W */
+/* global WazeWrap */
 /* global APIHelper */
 /* global APIHelperUI */
 /* global OpenLayers */
@@ -82,6 +84,18 @@
     $ul.append($switcher);
   }
 
+  function switchLayer(flag) {
+    localStorage.setItem('kadastr-layer', flag ? '1' : '');
+    visibility = flag;
+
+    kadastrLayer.setVisibility(flag);
+    markerLayer.setVisibility(flag);
+    if (flag) {
+      $('#kadastr').tab('show');
+      $('.kadastr-area-data').html('Оберіть об\'єкт для отримання інформації');
+    }
+  }
+
   function createTab() {
     // Setup Tab with options
     helper = new APIHelperUI(NAME);
@@ -134,17 +148,23 @@
     });
 
     $(document).on('click', '#layer-switcher-item_map_kadastr', e => {
-      let checked = e.target.checked;
-      localStorage.setItem('kadastr-layer', checked ? '1' : '');
-      visibility = checked;
-
-      kadastrLayer.setVisibility(checked);
-      markerLayer.setVisibility(checked);
-      if (checked) {
-        $('#kadastr').tab('show');
-        $('.kadastr-area-data').html('Оберіть об\'єкт для отримання інформації');
-      }
+      switchLayer(e.target.checked);
     });
+
+    /* name, desc, group, title, shortcut, callback, scope */
+    new WazeWrap.Interface.Shortcut(
+      'Kadastr',
+      'Відображення кадастру',
+      'layers',
+      'Кадастр',
+      'S+K',
+      function () {
+        let checked = localStorage.getItem('kadastr-layer');
+        switchLayer(!checked);
+        $('#layer-switcher-item_map_kadastr').prop('checked', !checked);
+      },
+      null
+    ).add();
   }
 
   function createMarkerIcon() {
@@ -263,8 +283,7 @@
         this.imageDiv.style.display = a ? "" : "none"
       },
       isDrawn: function isDrawn() {
-        var a = this.imageDiv && this.imageDiv.parentNode && 11 != this.imageDiv.parentNode.nodeType;
-        return a
+        return this.imageDiv && this.imageDiv.parentNode && 11 !== this.imageDiv.parentNode.nodeType;
       },
       CLASS_NAME: "OpenLayers.Icon"
     });
