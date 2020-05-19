@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko, Anton Shevchuk
-// @version        0.7.3
+// @version        0.7.4
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -70,18 +70,13 @@
   function createSwitcher() {
     let $ul = $('.collapsible-GROUP_DISPLAY');
 
-    let $switcher = $(
-      '<li>' +
-      '<div class="wz-checkbox">' +
-      '<input class="toggle" id="layer-switcher-item_map_kadastr" type="checkbox" ' + (visibility ? 'checked' : '' ) + '>' +
-      '<label for="layer-switcher-item_map_kadastr">' +
-      'Кадастр' +
-      '</label>' +
-      '</div>' +
-      '</li>'
-      );
+    let checkbox = document.createElement("wz-checkbox");
+    checkbox.id = 'layer-switcher-item_map_kadastr';
+    checkbox.className = "hydrated";
+    checkbox.checked = visibility;
+    checkbox.appendChild(document.createTextNode("Кадастр"));
 
-    $ul.append($switcher);
+    $ul.append(checkbox);
   }
 
   function switchLayer(flag) {
@@ -101,7 +96,7 @@
     helper = new APIHelperUI(NAME);
     tab = helper.createTab('Кадастр 🌍', '');
     let text = visibility
-      ? 'Оберіть об\'єкт для отримання інформації'
+      ? 'Оберіть об\'єкт для отримання посилання'
       : 'Ввімкніть шар кадастру та оберіть об\'єкт для отримання інформації';
     tab.addText('area-data', text);
     tab.inject();
@@ -143,7 +138,8 @@
       if (!visibility) return false;
       let coordinates = W.map.getLonLatFromPixel(e.xy);
       drawMarker(coordinates);
-      fetchAreaData(coordinates);
+      prepareLink(coordinates);
+      //fetchAreaData(coordinates);
       $('#kadastr').tab('show');
     });
 
@@ -178,6 +174,19 @@
     let lonLat = new OpenLayers.LonLat(lon, lat);
     markerLayer.clearMarkers();
     markerLayer.addMarker(new OpenLayers.Marker(lonLat, markerIcon));
+  }
+
+  function prepareLink(coordinates) {
+    // https://map.land.gov.ua/?cc=4036687.768852307,6463401.541891187&z=16&l=kadastr&bl=ortho10k_all
+    let url = new URL('https://map.land.gov.ua/');
+    url.searchParams.set('cc', coordinates.lon +','+ coordinates.lat);
+    url.searchParams.set('z', '16');
+    url.searchParams.set('l', 'kadastr');
+    url.searchParams.set('bl', 'ortho10k_all');
+
+    let $area = $('.kadastr-area-data');
+    $area.html('');
+    $area.html('<a href="'+ url.toString() +'">'+ url.hostname +'?cc='+ url.searchParams.get('cc') +'</a>');
   }
 
   function fetchAreaData(coordinates) {
