@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko, Anton Shevchuk
-// @version        0.7.4
+// @version        0.7.5
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -186,7 +186,7 @@
 
     let $area = $('.kadastr-area-data');
     $area.html('');
-    $area.html('<a href="'+ url.toString() +'">'+ url.hostname +'?cc='+ url.searchParams.get('cc') +'</a>');
+    $area.html('<a href="'+ url.toString() +'" target="_blank">'+ url.hostname +'?cc='+ url.searchParams.get('cc') +'</a>');
   }
 
   function fetchAreaData(coordinates) {
