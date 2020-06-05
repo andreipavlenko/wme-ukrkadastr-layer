@@ -1,21 +1,19 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko, Anton Shevchuk
-// @version        0.7.5
+// @version        0.7.6
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
 // @grant          none
 // @description    Adds kadastr layer
 // @require        https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js
-// @require        https://greasyfork.org/scripts/389117-apihelper/code/APIHelper.js?version=736468
-// @require        https://greasyfork.org/scripts/389577-apihelperui/code/APIHelperUI.js?version=734620
+// @require        https://greasyfork.org/scripts/389117-apihelper/code/APIHelper.js?version=812935
+// @require        https://greasyfork.org/scripts/389577-apihelperui/code/APIHelperUI.js?version=812941
 // @namespace      https://greasyfork.org/users/182795
 // ==/UserScript==
 
 /* jshint esversion: 8 */
-/* global window */
-/* global console */
 /* global require */
 /* global $ */
 /* global W */
