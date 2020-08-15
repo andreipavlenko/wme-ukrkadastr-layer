@@ -8,7 +8,7 @@
 // @grant          none
 // @description    Adds kadastr layer
 // @require        https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js
-// @require        https://greasyfork.org/scripts/389117-apihelper/code/APIHelper.js?version=812935
+// @require        https://greasyfork.org/scripts/389117-apihelper/code/APIHelper.js?version=837602
 // @require        https://greasyfork.org/scripts/389577-apihelperui/code/APIHelperUI.js?version=812941
 // @namespace      https://greasyfork.org/users/182795
 // ==/UserScript==
@@ -53,7 +53,7 @@
   `);
 
   $(document)
-    .on('ready.apihelper', ready);
+    .on('init.apihelper', ready);
 
   function ready() {
     polyfillOpenLayers();
