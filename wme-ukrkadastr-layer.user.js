@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko, Anton Shevchuk
-// @version        0.7.7
+// @version        0.7.8
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -67,14 +67,15 @@
 
   function createSwitcher() {
     let $ul = $('.collapsible-GROUP_DISPLAY');
-
+    let $li = document.createElement('li');
     let checkbox = document.createElement("wz-checkbox");
     checkbox.id = 'layer-switcher-item_map_kadastr';
     checkbox.className = "hydrated";
     checkbox.checked = visibility;
     checkbox.appendChild(document.createTextNode("Кадастр"));
 
-    $ul.append(checkbox);
+    $li.append(checkbox);
+    $ul.append($li);
   }
 
   function switchLayer(flag) {
