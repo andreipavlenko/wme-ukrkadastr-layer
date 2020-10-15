@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           WME Ukrkadastr Layer
 // @author         Andrei Pavlenko, Anton Shevchuk
-// @version        0.7.8
+// @version        0.7.9
 // @include        /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor.*$/
 // @exclude        https://www.waze.com/user/*editor/*
 // @exclude        https://www.waze.com/*/user/*editor/*
@@ -14,7 +14,6 @@
 // ==/UserScript==
 
 /* jshint esversion: 8 */
-/* global require */
 /* global $ */
 /* global W */
 /* global WazeWrap */
@@ -26,6 +25,7 @@
 
   const NAME = 'kadastr';
 
+  let isLoaded = false;
   let kadastrLayer, markerLayer, markerIcon;
   let helper, tab;
   let visibility = !!localStorage.getItem('kadastr-layer');
@@ -56,6 +56,11 @@
     .on('init.apihelper', ready);
 
   function ready() {
+    if (isLoaded) {
+      // ugly fix for script duplications
+      return;
+    }
+    isLoaded = true;
     polyfillOpenLayers();
     createMarkerIcon();
     addKadastrLayer();
